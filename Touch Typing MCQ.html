@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bethel Typing Finger Quiz</title>
+    <style>
+        /* ============================
+           CSS: MAWI NA LEH DESIGN
+           ============================ */
+        :root {
+            --primary-color: #4A90E2;
+            --bg-color: #F4F7F6;
+            --text-color: #333;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #856404;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .app-container {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 25px 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen {
+            display: none;
+            flex-grow: 1;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            text-align: center;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        button.primary-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button.primary-btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        #player-name {
+            display: block;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .timer-wrapper {
+            width: 100%;
+            height: 22px;
+            background-color: #eee;
+            border-radius: 11px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        #timer-bar {
+            height: 100%;
+            width: 100%;
+            background-color: var(--success-color);
+            transition: width 1s linear, background-color 0.3s;
+        }
+
+        #time-text {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+            font-weight: bold;
+            line-height: 22px;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        #question-count {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        #question-text {
+            font-size: 20px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        #options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 15px;
+            font-size: 15px;
+            background-color: #fff;
+            color: var(--text-color);
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .option-btn:active {
+            background-color: #f0f0f0;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .option-btn.correct {
+            background-color: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+
+        .option-btn.wrong {
+            background-color: var(--danger-color);
+            color: white;
+            border-color: var(--danger-color);
+        }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 15px;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        #final-message {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+        
+        #final-score {
+            font-size: 20px;
+            margin: 20px 0;
+            color: #444;
+        }
+
+        /* Notice & Warning Section */
+        .notice {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.5;
+        }
+        .notice strong {
+            color: var(--danger-color);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- 1. START SCREEN -->
+        <div id="start-screen" class="screen active">
+            <h1>⌨️ Keyboard Typing Quiz</h1>
+            <input type="text" id="username" placeholder="I hming chhu lut rawh">
+            <button id="start-btn" class="primary-btn">Start Quiz</button>
+        </div>
+
+        <!-- 2. QUIZ SCREEN -->
+        <div id="quiz-screen" class="screen">
+            <span id="player-name"></span>
+            
+            <div class="timer-wrapper">
+                <div id="timer-bar"></div>
+                <span id="time-text">30s</span>
+            </div>
+
+            <div id="question-count"></div>
+            <h2 id="question-text"></h2>
+            
+            <div id="options-container"></div>
+            
+            <p id="feedback"></p>
+        </div>
+
+        <!-- 3. RESULT SCREEN -->
+        <div id="result-screen" class="screen">
+            <h1 id="final-message"></h1>
+            <h2 id="final-score"></h2>
+            <button id="restart-btn" class="primary-btn">Play Again</button>
+        </div>
+
+        <!-- WARNING / COPYRIGHT NOTICE -->
+        <div class="notice">
+            ⚠️ <strong>Hriattirna:</strong> He quiz hi Bethel Computer Centre a zirlaite hman atana siam a ni a, hmundangah theh darh phal a ni lo.
+        </div>
+    </div>
+
+    <!-- ============================
+         JAVASCRIPT LOGIC
+         ============================ -->
+    <script>
+        // Kut zungtang hmingte (Options atan)
+        const LP = "Kut vei lam kutzungte (Left Pinky)";
+        const LR = "Kut vei lam kutzung u (Left Ring)";
+        const LM = "Kut vei lam kutzunglai (Left Middle)";
+        const LI = "Kut vei lam kutzungchal (Left Index)";
+        const LT = "Kut vei lam kutzungpui (Left Thumb)";
+
+        const RP = "Kut ding lam kutzungte (Right Pinky)";
+        const RR = "Kut ding lam kutzung u (Right Ring)";
+        const RM = "Kut ding lam kutzunglai (Right Middle)";
+        const RI = "Kut ding lam kutzungchal (Right Index)";
+        const RT = "Kut ding lam kutzungpui (Right Thumb)";
+
+        const THUMBS = "Kutzungpui (Thumb)";
+
+        // Zawhna Bank (60 Questions)
+        const questionBank = [
+            { q: "'A' key hi khawi kutzungtangin nge hmeh tur?", options: [LP, LR, LM, LI], answer: LP },
+            { q: "'S' key hi khawi kutzungtangin nge hmeh tur?", options: [LP, LR, LM, LI], answer: LR },
+            { q: "'D' key hi khawi kutzungtangin nge hmeh tur?", options: [LR, LM, LI, RI], answer: LM },
+            { q: "'F' key hi khawi kutzungtangin nge hmeh tur?", options: [LM, LI, RI, RM], answer: LI },
+            { q: "'G' key hi khawi kutzungtangin nge hmeh tur?", options: [LM, LI, RI, RM], answer: LI },
+            { q: "'H' key hi khawi kutzungtangin nge hmeh tur?", options: [LI, RI, RM, RR], answer: RI },
+            { q: "'J' key hi khawi kutzungtangin nge hmeh tur?", options: [LI, RI, RM, RR], answer: RI },
+            { q: "'K' key hi khawi kutzungtangin nge hmeh tur?", options: [RI, RM, RR, RP], answer: RM },
+            { q: "'L' key hi khawi kutzungtangin nge hmeh tur?", options: [RM, RR, RP, LR], answer: RR },
+            { q: "';' (Semicolon) key hi khawi kutzungtangin nge hmeh tur?", options: [RR, RP, LP, LR], answer: RP },
+            
+            { q: "'Q' key hi khawi kutzungtangin nge hmeh tur?", options: [LP, LR, LM, RP], answer: LP },
+            { q: "'W' key hi khawi kutzungtangin nge hmeh tur?", options: [LP, LR, LM, LI], answer: LR },
+            { q: "'E' key hi khawi kutzungtangin nge hmeh tur?", options: [LR, LM, LI, RM], answer: LM },
+            { q: "'R' key hi khawi kutzungtangin nge hmeh tur?", options: [LM, LI, RI, RM], answer: LI },
+            { q: "'T' key hi khawi kutzungtangin nge hmeh tur?", options: [LI, RI, LM, RM], answer: LI },
+            { q: "'Y' key hi khawi kutzungtangin nge hmeh tur?", options: [LI, RI, RM, RR], answer: RI },
+            { q: "'U' key hi khawi kutzungtangin nge hmeh tur?", options: [RI, RM, RR, RP], answer: RI },
+            { q: "'I' key hi khawi kutzungtangin nge hmeh tur?", options: [RI, RM, RR, RP], answer: RM },
+            { q: "'O' key hi khawi kutzungtangin nge hmeh tur?", options: [RM, RR, RP, LR], answer: RR },
+            { q: "'P' key hi khawi kutzungtangin nge hmeh tur?", options: [RR, RP, LP, LR], answer: RP },
+
+            { q: "'Z' key hi khawi kutzungtangin nge hmeh tur?", options: [LP, LR, LM, RP], answer: LP },
+            { q: "'X' key hi khawi kutzungtangin nge hmeh tur?", options: [LP, LR, LM, LI], answer: LR },
+            { q: "'C' key hi khawi kutzungtangin nge hmeh tur?", options: [LR, LM, LI, RI], answer: LM },
+            { q: "'V' key hi khawi kutzungtangin nge hmeh tur?", options: [LM, LI, RI, RM], answer: LI },
+            { q: "'B' key hi khawi kutzungtangin nge hmeh tur?", options: [LM, LI, RI, RM], answer: LI },
+            { q: "'N' key hi khawi kutzungtangin nge hmeh tur?", options: [LI, RI, RM, RR], answer: RI },
+            { q: "'M' key hi khawi kutzungtangin nge hmeh tur?", options: [RI, RM, RR, RP], answer: RI },
+            { q: "',' (Comma) key hi khawi kutzungtangin nge hmeh tur?", options: [RI, RM, RR, RP], answer: RM },
+            { q: "'.' (Period) key hi khawi kutzungtangin nge hmeh tur?", options: [RM, RR, RP, LR], answer: RR },
+            { q: "'/' (Slash) key hi khawi kutzungtangin nge hmeh tur?", options: [RR, RP, LP, LR], answer: RP },
+
+            { q: "'1' key hi khawi kutzungtangin nge hmeh tur?", options: [LP, LR, LM, LI], answer: LP },
+            { q: "'2' key hi khawi kutzungtangin nge hmeh tur?", options: [LP, LR, LM, LI], answer: LR },
+            { q: "'3' key hi khawi kutzungtangin nge hmeh tur?", options: [LR, LM, LI, RM], answer: LM },
+            { q: "'4' key hi khawi kutzungtangin nge hmeh tur?", options: [LM, LI, RI, RM], answer: LI },
+            { q: "'5' key hi khawi kutzungtangin nge hmeh tur?", options: [LM, LI, RI, RM], answer: LI },
+            { q: "'6' key hi khawi kutzungtangin nge hmeh tur?", options: [LI, RI, RM, RR], answer: RI },
+            { q: "'7' key hi khawi kutzungtangin nge hmeh tur?", options: [LI, RI, RM, RR], answer: RI },
+            { q: "'8' key hi khawi kutzungtangin nge hmeh tur?", options: [RI, RM, RR, RP], answer: RM },
+            { q: "'9' key hi khawi kutzungtangin nge hmeh tur?", options: [RM, RR, RP, LR], answer: RR },
+            { q: "'0' key hi khawi kutzungtangin nge hmeh tur?", options: [RR, RP, LP, LR], answer: RP },
+
+            { q: "'-' (Minus) key hi khawi kutzungtangin nge hmeh tur?", options: [RM, RR, RP, LP], answer: RP },
+            { q: "'=' (Equals) key hi khawi kutzungtangin nge hmeh tur?", options: [RR, RP, LP, LR], answer: RP },
+            { q: "'Backspace' key hi khawi kutzungtangin nge hmeh tur?", options: [RR, RP, LP, LI], answer: RP },
+            { q: "'Enter' key hi khawi kutzungtangin nge hmeh tur?", options: [RR, RP, LP, LR], answer: RP },
+            { q: "'Spacebar' hi khawi kutzungtangin nge hmeh tur?", options: [THUMBS, LI, RI, LP], answer: THUMBS },
+            
+            { q: "'Shift' (Left) key hi khawi kutzungtangin nge hmeh tur?", options: [LP, LR, LM, RP], answer: LP },
+            { q: "'Shift' (Right) key hi khawi kutzungtangin nge hmeh tur?", options: [RP, RR, RM, LP], answer: RP },
+            { q: "'Caps Lock' key hi khawi kutzungtangin nge hmeh tur?", options: [LP, LR, LM, LI], answer: LP },
+            { q: "'Tab' key hi khawi kutzungtangin nge hmeh tur?", options: [LP, LR, LM, RP], answer: LP },
+            { q: "'[' (Left Bracket) key hi khawi kutzungtangin nge hmeh tur?", options: [RR, RP, LP, LR], answer: RP },
+            { q: "']' (Right Bracket) key hi khawi kutzungtangin nge hmeh tur?", options: [RR, RP, LP, LR], answer: RP },
+            { q: "'\\' (Backslash) key hi khawi kutzungtangin nge hmeh tur?", options: [RR, RP, LP, LR], answer: RP },
+            { q: "''' (Quote) key hi khawi kutzungtangin nge hmeh tur?", options: [RR, RP, LP, LR], answer: RP },
+            { q: "'`' (Tilde/Backtick) key hi khawi kutzungtangin nge hmeh tur?", options: [LP, LR, LM, RP], answer: LP },
+            
+            // Extra general practice questions
+            { q: "Home Row-a Kut vei lam hmeh tur dik tak thlang rawh.", options: ["A S D F", "Q W E R", "Z X C V", "J K L ;"], answer: "A S D F" },
+            { q: "Home Row-a Kut ding lam hmeh tur dik tak thlang rawh.", options: ["J K L ;", "U I O P", "M , . /", "A S D F"], answer: "J K L ;" },
+            { q: "Kutzungchal vei lam (Left Index) hian Home Row-ah eng key nge a hmeh?", options: ["F", "D", "S", "A"], answer: "F" },
+            { q: "Kutzungchal ding lam (Right Index) hian Home Row-ah eng key nge a hmeh?", options: ["J", "K", "L", ";"], answer: "J" },
+            { q: "Touch typing-ah kan mit hian khawilai nge a en ber tur?", options: ["Monitor (Screen)", "Keyboard", "Kutzungtang", "Mouse"], answer: "Monitor (Screen)" },
+            { q: "Kutzunglai (Middle finger) vei lam hian eng key nge a hmeh thin?", options: ["D, E, C, 3", "S, W, X, 2", "F, R, V, 4", "J, U, M, 7"], answer: "D, E, C, 3" }
+        ];
+
+        // Variables
+        let userName = "";
+        let currentQuizQueue = [];
+        let questionTracker = {}; // Track number of attempts per question
+        let score = 0;
+        let totalAnsweredCorrectly = 0;
+        let maxQuestions = 30;
+        let timerInterval;
+        let timeLeft = 30;
+
+        // UI Elements
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const nameInput = document.getElementById('username');
+        const startBtn = document.getElementById('start-btn');
+        const playerNameDisplay = document.getElementById('player-name');
+        const questionCountDisplay = document.getElementById('question-count');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackText = document.getElementById('feedback');
+        const finalMessage = document.getElementById('final-message');
+        const finalScore = document.getElementById('final-score');
+        const restartBtn = document.getElementById('restart-btn');
+        const timerBar = document.getElementById('timer-bar');
+        const timeText = document.getElementById('time-text');
+
+        // Array Shuffle Function
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Start Quiz
+        startBtn.addEventListener('click', () => {
+            userName = nameInput.value.trim();
+            if (userName === "") {
+                alert("Khawngaihin i hming chhu lut rawh.");
+                return;
+            }
+            
+            // Initialize Quiz
+            score = 0;
+            totalAnsweredCorrectly = 0;
+            questionTracker = {};
+            
+            // Suffle question bank and pick 30
+            let shuffledBank = [...questionBank];
+            shuffleArray(shuffledBank);
+            currentQuizQueue = shuffledBank.slice(0, maxQuestions).map((q, index) => ({...q, id: index }));
+            
+            startScreen.classList.remove('active');
+            quizScreen.classList.add('active');
+            playerNameDisplay.innerText = "👤 Player: " + userName;
+            
+            loadNextQuestion();
+        });
+
+        // Load Question
+        function loadNextQuestion() {
+            if (currentQuizQueue.length === 0 || totalAnsweredCorrectly >= maxQuestions) {
+                endQuiz();
+                return;
+            }
+
+            feedbackText.innerText = "";
+            optionsContainer.innerHTML = "";
+            
+            const qData = currentQuizQueue[0]; // Take the first question in the queue
+            questionText.innerText = qData.q;
+            questionCountDisplay.innerText = `Zawhna chhan dik tawh: ${totalAnsweredCorrectly} / ${maxQuestions}`;
+
+            // Shuffle options for the current question
+            let options = [...qData.options];
+            shuffleArray(options);
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.classList.add('option-btn');
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt, qData, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            startTimer(qData);
+        }
+
+        // Timer Logic
+        function startTimer(qData) {
+            clearInterval(timerInterval);
+            timeLeft = 30;
+            timerBar.style.width = "100%";
+            timerBar.style.backgroundColor = "var(--success-color)";
+            timeText.innerText = timeLeft + "s";
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let percentage = (timeLeft / 30) * 100;
+                timerBar.style.width = percentage + "%";
+                timeText.innerText = timeLeft + "s";
+
+                if (timeLeft <= 10) {
+                    timerBar.style.backgroundColor = "var(--danger-color)"; // Red color when time is low
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout(qData);
+                }
+            }, 1000);
+        }
+
+        function handleTimeout(qData) {
+            feedbackText.innerText = "⏳ I hun a tawp! (Time Out)";
+            feedbackText.style.color = "var(--danger-color)";
+            processWrongAnswer(qData);
+            disableOptions();
+            setTimeout(advanceQueue, 2000);
+        }
+
+        // Check Answer
+        function checkAnswer(selectedOption, qData, btn) {
+            clearInterval(timerInterval);
+            disableOptions();
+
+            // Track attempt number (1st, 2nd, 3rd, 4th)
+            if (!questionTracker[qData.id]) questionTracker[qData.id] = 1;
+            else questionTracker[qData.id]++;
+
+            let attempts = questionTracker[qData.id];
+
+            if (selectedOption === qData.answer) {
+                btn.classList.add('correct');
+                let points = 0;
+                if (attempts === 1) points = 10;
+                else if (attempts === 2) points = 8;
+                else if (attempts === 3) points = 6;
+                else points = 0; // Vawi linaah chuan point 0
+
+                score += points;
+                totalAnsweredCorrectly++;
+                
+                if (points > 0) {
+                    feedbackText.innerText = `✅ A dik! Point ${points} i hmu e.`;
+                    feedbackText.style.color = "var(--success-color)";
+                } else {
+                    feedbackText.innerText = `✅ A dik! Mahse vawi ${attempts} i try avangin point 0 i hmu.`;
+                    feedbackText.style.color = "var(--warning-color)";
+                }
+                
+                // Remove from queue since it's answered correctly
+                currentQuizQueue.shift(); 
+            } else {
+                btn.classList.add('wrong');
+                feedbackText.innerText = "❌ A dik lo! Nakinah i chhang nawn leh dawn nia.";
+                feedbackText.style.color = "var(--danger-color)";
+                
+                processWrongAnswer(qData);
+            }
+
+            setTimeout(advanceQueue, 2000); // 2 seconds delay hnuah zawhna dawt leh a lang ang
+        }
+
+        function processWrongAnswer(qData) {
+            if (!questionTracker[qData.id]) questionTracker[qData.id] = 1;
+            else questionTracker[qData.id]++;
+
+            let attempts = questionTracker[qData.id];
+
+            // Remove current question from the front
+            let failedQuestion = currentQuizQueue.shift();
+
+            if (attempts < 4) {
+                // Spaced repetition: Put it at the back of the queue
+                currentQuizQueue.push(failedQuestion);
+            } else {
+                feedbackText.innerText = "❌ Vawi 4 i ti sual tawh. Ni dangah i chhang tha leh dawn nia.";
+                // Vawi 4 a dik loh chuan queue atangin kan paih ang, total ah tel a ni dawn lova mahse tihtawp na tur kan check ang
+                totalAnsweredCorrectly++; // Just to proceed the count, won't get points
+            }
+        }
+
+        function disableOptions() {
+            const btns = document.querySelectorAll('.option-btn');
+            btns.forEach(b => b.disabled = true);
+        }
+
+        function advanceQueue() {
+            loadNextQuestion();
+        }
+
+        // End Quiz
+        function endQuiz() {
+            quizScreen.classList.remove('active');
+            resultScreen.classList.add('active');
+            
+            finalMessage.innerText = `🎉 I zo ta e, ${userName}!`;
+            finalScore.innerText = `I Point Hmuh Zawng Zawng:\n ${score} / 300`;
+        }
+
+        // Restart Quiz
+        restartBtn.addEventListener('click', () => {
+            resultScreen.classList.remove('active');
+            startScreen.classList.add('active');
+            nameInput.value = "";
+        });
+    </script>
+</body>
+</html>
