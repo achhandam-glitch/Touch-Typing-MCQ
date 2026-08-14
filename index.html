@@ -26,8 +26,8 @@
     <div class="container">
         <h2>HTML & CSS Test - 1</h2>
         
-        <!-- Warning message if not logged in through portal -->
-        <div id="auth-warning">⚠️ I in-register lo emaw Portal atanga luh a ni lo! Test pek phal a ni lo.</div>
+        <!-- Warning message if opened directly without portal link -->
+        <div id="auth-warning">⚠️ Portal atanga luh a ni lo! Test pek phal a ni lo.</div>
 
         <form id="test-form" onsubmit="submitTest(event)">
             <div class="input-group">
@@ -63,10 +63,29 @@
         </form>
     </div>
 
-    <!-- Firebase Connection & Strict Verification Logic -->
+    <!-- Portal Link Verification Script -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const enr = urlParams.get('enrollment');
+            const name = urlParams.get('name');
+            
+            if (!enr || !name) {
+                // Portal atanga rawn lut lo an nih chuan form kan khar hmak ang
+                document.getElementById('test-form').style.display = 'none';
+                document.getElementById('auth-warning').style.display = 'block';
+            } else {
+                // Portal atanga rawn lut an nih chuan hming leh enrollment a rawn chhuah sak ang
+                document.getElementById('student-enrollment').value = enr;
+                document.getElementById('student-name').value = name;
+            }
+        });
+    </script>
+
+    <!-- Firebase Connection & Mark Submission -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAYardtj2WcBiUGSD9Ytqa0yZUWwjEXgis",
@@ -80,38 +99,6 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
-        // Page load rualin URL atangin enrollment kan la ang a, database-ah a awm tak zet em check tur a ni
-        window.addEventListener('DOMContentLoaded', async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const enr = urlParams.get('enrollment');
-            
-            if (!enr) {
-                document.getElementById('test-form').style.display = 'none';
-                document.getElementById('auth-warning').style.display = 'block';
-                return;
-            }
-
-            try {
-                // Database-ah he enrollment hi a awm tak zet em?
-                const studentDocRef = doc(db, "students", enr);
-                const studentSnap = await getDoc(studentDocRef);
-
-                if (studentSnap.exists()) {
-                    const studentData = studentSnap.data();
-                    document.getElementById('student-enrollment').value = studentData.enrollment;
-                    document.getElementById('student-name').value = studentData.name;
-                } else {
-                    // Database-a a awm lo a nih chuan form kan khar hmak ang
-                    document.getElementById('test-form').style.display = 'none';
-                    document.getElementById('auth-warning').style.display = 'block';
-                }
-            } catch (error) {
-                console.error("Error verifying student:", error);
-                document.getElementById('test-form').style.display = 'none';
-                document.getElementById('auth-warning').style.display = 'block';
-            }
-        });
 
         window.submitTest = async function(event) {
             event.preventDefault();
