@@ -3,37 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bethel Test Portal</title>
+    <title>Bethel Computer Centre - Test Portal</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 10px; }
-        .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        input[type="text"] { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background: #0284c7; color: white; padding: 12px; width: 100%; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
-        .question { margin-bottom: 15px; font-size: 14px; }
-        .options { margin-left: 10px; }
-        h2 { font-size: 18px; color: #0284c7; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 15px; color: #333; }
+        .container { max-width: 500px; margin: 30px auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h2, h3 { color: #0284c7; text-align: center; margin-top: 0; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; }
+        input[type="text"] { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
+        button { background: #0284c7; color: white; padding: 12px; width: 100%; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #0369a1; }
+        .question { background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #0284c7; }
+        .question p { font-weight: 600; margin-top: 0; margin-bottom: 10px; font-size: 15px; }
+        .options label { display: block; margin-bottom: 8px; cursor: pointer; font-size: 14px; }
+        #test-box { display: none; }
+        #error-msg { color: #dc2626; font-size: 13px; text-align: center; margin-top: 5px; }
     </style>
 </head>
 <body>
+
+    <!-- 1. ENROLLMENT CHECK BOX -->
     <div class="container" id="login-box">
-        <h3>Enrollment Number chhu rawh</h3>
-        <input type="text" id="check-enr" placeholder="Entirnan: 2602001">
-        <button onclick="verifyStudent()">Verify & Test Start</button>
+        <h3>Zirlai Login</h3>
+        <p style="text-align: center; color: #64748b; font-size: 14px;">Test tan turin i Enrollment Number chhu rawh.</p>
+        <div class="input-group">
+            <label>Enrollment Number</label>
+            <input type="text" id="check-enr" placeholder="Entirnan: 2602001">
+        </div>
+        <button onclick="verifyStudent()">Test Pan Rawh</button>
+        <div id="error-msg"></div>
     </div>
 
-    <div class="container" id="test-box" style="display:none;">
+    <!-- 2. TEST FORM BOX -->
+    <div class="container" id="test-box">
         <h2 id="student-display"></h2>
+        <p style="text-align: center; color: #64748b; font-size: 13px; margin-bottom: 20px;">HTML & CSS Basic Test</p>
+        
         <form id="test-form" onsubmit="submitTest(event)">
-            <div class="question">1. HTML tag container siam nan eng tag nge hman?
+            
+            <div class="question">
+                <p>1. HTML tag container siam nan eng tag nge hman ber?</p>
                 <div class="options">
-                    <input type="radio" name="q1" value="div" required> &lt;div&gt;<br>
-                    <input type="radio" name="q1" value="span"> &lt;span&gt;<br>
-                    <input type="radio" name="q1" value="p"> &lt;p&gt;<br>
-                    <input type="radio" name="q1" value="section"> &lt;section&gt;
+                    <label><input type="radio" name="q1" value="div" required> a) &lt;div&gt;</label>
+                    <label><input type="radio" name="q1" value="span"> b) &lt;span&gt;</label>
+                    <label><input type="radio" name="q1" value="p"> c) &lt;p&gt;</label>
+                    <label><input type="radio" name="q1" value="br"> d) &lt;br&gt;</label>
                 </div>
             </div>
-            <div class="question">2. CSS Box Model-ah content leh border inkar hi engnge?
+
+            <div class="question">
+                <p>2. CSS Box Model-ah content leh border inkar hi engnge?</p>
+                <div class="options">
+                    <label><input type="radio" name="q2" value="padding" required> a) Padding</label>
+                    <label><input type="radio" name="q2" value="margin"> b) Margin</label>
+                    <label><input type="radio" name="q2" value="border"> c) Border</label>
+                    <label><input type="radio" name="q2" value="width"> d) Width</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>3. Website responsive nih tir nan eng technology nge hman?</p>
+                <div class="options">
+                    <label><input type="radio" name="q3" value="media" required> a) Media Queries</label>
+                    <label><input type="radio" name="q3" value="js"> b) JavaScript</label>
+                    <label><input type="radio" name="q3" value="php"> c) PHP</label>
+                    <label><input type="radio" name="q3" value="sql"> d) SQL</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>4. CSS Grid-ah column lian lam siam nan eng property nge hman?</p>
+                <div class="options">
+                    <label><input type="radio" name="q4" value="grid" required> a) grid-template-columns</label>
+                    <label><input type="radio" name="q4" value="flex"> b) display: flex</label>
+                    <label><input type="radio" name="q4" value="auto"> c) margin: auto</label>
+                    <label><input type="radio" name="q4" value="none"> d) none</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>5. HTML5 element thar ber pakhat chu engnge?</p>
+                <div class="options">
+                    <label><input type="radio" name="q5" value="section" required> a) &lt;section&gt;</label>
+                    <label><input type="radio" name="q5" value="font"> b) &lt;font&gt;</label>
+                    <label><input type="radio" name="q5" value="center"> c) &lt;center&gt;</label>
+                    <label><input type="radio" name="q5" value="frame"> d) &lt;frame&gt;</label>
+                </div>
+            </div>
+
+            <button type="submit" id="submit-btn">Test Thehlut Rawh</button>
+        </form>
+    </div>
+
+    <!-- FIREBASE LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyAYardtj2WcBiUGSD9Ytqa0yZUWwjEXgis",
+            projectId: "bethel-portal-1641f"
+        };
+
+        const db = getFirestore(initializeApp(firebaseConfig));
+        let activeStudent = null;
+
+        // 1. Verify Student by Enrollment
+        window.verifyStudent = async function() {
+            const enrInput = document.getElementById('check-enr').value.trim();
+            const errorDiv = document.getElementById('error-msg');
+            errorDiv.innerText = "";
+
+            if(!enrInput) {
+                errorDiv.innerText = "Enrollment number chhu rawh.";
+                return;
+            }
+
+            try {
+                const docRef = doc(db, "students", enrInput);
+                const docSnap = await getDoc(docRef);
+
+                if(docSnap.exists()) {
+                    activeStudent = docSnap.data();
+                    document.getElementById('student-display').innerText = `Zirlai: ${activeStudent.name}`;
+                    document.getElementById('login-box').style.display = 'none';
+                    document.getElementById('test-box').style.display = 'block';
+                } else {
+                    errorDiv.innerText = "Database-ah he enrollment hi a awm lo. In-register hmasa rawh.";
+                }
+            } catch (err) {
+                errorDiv.innerText = "Harsatna a awm: " + err.message;
+            }
+        };
+
+        // 2. Submit Test
+        window.submitTest = async function(event) {
+            event.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.innerText = "Thehlut mek...";
+            btn.disabled = true;
+
+            // Mark chhut dan
+            let score = 0;
+            const q1 = document.querySelector('input[name="q1"]:checked').value;
+            const q2 = document.querySelector('input[name="q2"]:checked').value;
+            const q3 = document.querySelector('input[name="q3"]:checked').value;
+            const q4 = document.querySelector('input[name="q4"]:checked').value;
+            const q5 = document.querySelector('input[name="q5"]:checked').value;
+
+            if(q1 === 'div') score++;
+            if(q2 === 'padding') score++;
+            if(q3 === 'media') score++;
+            if(q4 === 'grid') score++;
+            if(q5 === 'section') score++;
+
+            const internalMark = (score / 5) * 10;
+
+            try {
+                await setDoc(doc(db, "student_results", activeStudent.enrollment), {
+                    enrollment: activeStudent.enrollment,
+                    name: activeStudent.name,
+                    totalScore: score,
+                    outOf: 5,
+                    internalMark10: internalMark,
+                    submittedAt: serverTimestamp()
+                });
+
+                alert(`I test thehluh a hlawhtling e! Mark: ${score}/5`);
+                btn.innerText = "Thehluh a ni tawh";
+            } catch (error) {
+                alert("Harsatna a awm: " + error.message);
+                btn.innerText = "Test Thehlut Rawh";
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>
                 <div class="options">
                     <input type="radio" name="q2" value="padding" required> Padding<br>
                     <input type="radio" name="q2" value="margin"> Margin<br>
