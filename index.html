@@ -11,8 +11,7 @@
         
         .input-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
         label { font-size: 14px; font-weight: 600; color: #475569; }
-        input[type="text"] { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none; }
-        input[type="text"]:focus { border-color: #0284c7; }
+        input[type="text"] { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none; background-color: #f8fafc; }
 
         .question { margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #0284c7; }
         .question p { font-weight: 600; margin-top: 0; margin-bottom: 10px; }
@@ -20,28 +19,28 @@
         
         button { background-color: #0284c7; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; transition: 0.3s; margin-top: 10px; }
         button:hover { background-color: #0369a1; }
+        #auth-warning { background: #fee2e2; color: #991b1b; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; display: none; margin-bottom: 15px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>HTML & CSS Test - 1</h2>
-        <form onsubmit="submitTest(event)">
-            
-            <!-- Zirlai Hming leh Enrollment -->
+        
+        <!-- Warning message if not logged in through portal -->
+        <div id="auth-warning">⚠️ I in-register lo emaw Portal atanga luh a ni lo! Test pek phal a ni lo.</div>
+
+        <form id="test-form" onsubmit="submitTest(event)">
             <div class="input-group">
                 <label>Zirlai Hming</label>
-                <!-- Heta id hi a pawimawh -->
-                <input type="text" id="student-name" placeholder="I hming pum ziak rawh" required>
+                <input type="text" id="student-name" readonly required>
             </div>
             <div class="input-group">
                 <label>Enrollment Number</label>
-                <!-- Heta id hi a pawimawh -->
-                <input type="text" id="student-enrollment" placeholder="Entirnan: 2602001" required>
+                <input type="text" id="student-enrollment" readonly required>
             </div>
 
             <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
 
-            <!-- Zawhnate -->
             <div class="question">
                 <p>1. HTML tih hi enge a awmzia?</p>
                 <div class="options">
@@ -64,33 +63,10 @@
         </form>
     </div>
 
-    <!-- Auto-Fill leh Lock Logic (Hming chhut theih loh nan) -->
-    <script>
-        window.addEventListener('DOMContentLoaded', (event) => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const enr = urlParams.get('enrollment');
-            const name = urlParams.get('name');
-            
-            if (enr && name) {
-                const enrInput = document.getElementById('student-enrollment');
-                const nameInput = document.getElementById('student-name');
-                
-                // Form ah dah luh leh lock (readOnly) nghal
-                enrInput.value = enr;
-                enrInput.readOnly = true;
-                enrInput.style.backgroundColor = '#e2e8f0'; // Gray background
-                
-                nameInput.value = name;
-                nameInput.readOnly = true;
-                nameInput.style.backgroundColor = '#e2e8f0'; // Gray background
-            }
-        });
-    </script>
-
-    <!-- Firebase Connection & Mark Lak Khawmna Logic -->
+    <!-- Firebase Connection & Strict Verification Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAYardtj2WcBiUGSD9Ytqa0yZUWwjEXgis",
@@ -104,6 +80,38 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // Page load rualin URL atangin enrollment kan la ang a, database-ah a awm tak zet em check tur a ni
+        window.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const enr = urlParams.get('enrollment');
+            
+            if (!enr) {
+                document.getElementById('test-form').style.display = 'none';
+                document.getElementById('auth-warning').style.display = 'block';
+                return;
+            }
+
+            try {
+                // Database-ah he enrollment hi a awm tak zet em?
+                const studentDocRef = doc(db, "students", enr);
+                const studentSnap = await getDoc(studentDocRef);
+
+                if (studentSnap.exists()) {
+                    const studentData = studentSnap.data();
+                    document.getElementById('student-enrollment').value = studentData.enrollment;
+                    document.getElementById('student-name').value = studentData.name;
+                } else {
+                    // Database-a a awm lo a nih chuan form kan khar hmak ang
+                    document.getElementById('test-form').style.display = 'none';
+                    document.getElementById('auth-warning').style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Error verifying student:", error);
+                document.getElementById('test-form').style.display = 'none';
+                document.getElementById('auth-warning').style.display = 'block';
+            }
+        });
 
         window.submitTest = async function(event) {
             event.preventDefault();
