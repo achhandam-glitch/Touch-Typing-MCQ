@@ -30,10 +30,12 @@
             <!-- Zirlai Hming leh Enrollment -->
             <div class="input-group">
                 <label>Zirlai Hming</label>
+                <!-- Heta id hi a pawimawh -->
                 <input type="text" id="student-name" placeholder="I hming pum ziak rawh" required>
             </div>
             <div class="input-group">
                 <label>Enrollment Number</label>
+                <!-- Heta id hi a pawimawh -->
                 <input type="text" id="student-enrollment" placeholder="Entirnan: 2602001" required>
             </div>
 
@@ -62,12 +64,34 @@
         </form>
     </div>
 
+    <!-- Auto-Fill leh Lock Logic (Hming chhut theih loh nan) -->
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const enr = urlParams.get('enrollment');
+            const name = urlParams.get('name');
+            
+            if (enr && name) {
+                const enrInput = document.getElementById('student-enrollment');
+                const nameInput = document.getElementById('student-name');
+                
+                // Form ah dah luh leh lock (readOnly) nghal
+                enrInput.value = enr;
+                enrInput.readOnly = true;
+                enrInput.style.backgroundColor = '#e2e8f0'; // Gray background
+                
+                nameInput.value = name;
+                nameInput.readOnly = true;
+                nameInput.style.backgroundColor = '#e2e8f0'; // Gray background
+            }
+        });
+    </script>
+
     <!-- Firebase Connection & Mark Lak Khawmna Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-        // I portal Firebase Config tho kha a ni
         const firebaseConfig = {
             apiKey: "AIzaSyAYardtj2WcBiUGSD9Ytqa0yZUWwjEXgis",
             authDomain: "bethel-portal-1641f.firebaseapp.com",
@@ -90,21 +114,17 @@
             const name = document.getElementById('student-name').value.trim();
             const enrollment = document.getElementById('student-enrollment').value.trim();
             
-            // Mark chhiar dan
             let score = 0;
             const q1Answer = document.querySelector('input[name="q1"]:checked').value;
             const q2Answer = document.querySelector('input[name="q2"]:checked').value;
 
-            // Chhanna dikte (Q1 chu 'a', Q2 chu 'b')
             if (q1Answer === 'a') score++;
             if (q2Answer === 'b') score++;
 
-            // Total zawhna chu 2 a ni a, Internal mark 10% formula
             const totalQuestions = 2;
             const internalMark = (score / totalQuestions) * 10;
 
             try {
-                // Firebase database ah mark a thawn lut
                 await setDoc(doc(db, "student_results", enrollment), {
                     enrollment: enrollment,
                     name: name,
@@ -115,7 +135,6 @@
                 });
                 
                 alert("I test i thehlut hlawhtling e! I mark chu zirtirtu in a hmu thei tawh ang.");
-                event.target.reset(); // Form a tifai
                 btn.innerText = "Test Thehluh A Ni Tawh";
             } catch (error) {
                 alert("Harsatna a awm: " + error.message);
