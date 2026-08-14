@@ -2,38 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bethel Computer Centre - Test</title>
+    <title>Bethel Test Portal</title>
     <style>
         body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .input-group { margin-bottom: 15px; }
-        input { width: 95%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #eee; }
-        .question { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        button { background: #0284c7; color: white; border: none; padding: 12px; width: 100%; cursor: pointer; border-radius: 5px; font-weight: bold; }
-        #auth-warning { background: #fee2e2; color: #991b1b; padding: 20px; text-align: center; font-weight: bold; display: none; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
+        input { width: 95%; padding: 10px; margin-bottom: 10px; }
+        button { background: #0284c7; color: white; padding: 10px; width: 100%; border: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>HTML & CSS Final Test</h2>
-        <div id="auth-warning">⚠️ Portal atangin login phawt rawh!</div>
+    <div class="container" id="login-box">
+        <h3>Enrollment Number chhu rawh</h3>
+        <input type="text" id="check-enr" placeholder="Entirnan: 2602001">
+        <button onclick="verifyStudent()">Verify & Test Start</button>
+    </div>
+
+    <div class="container" id="test-box" style="display:none;">
+        <h2 id="student-display"></h2>
         <form id="test-form" onsubmit="submitTest(event)">
-            <div class="input-group">
-                <label>Zirlai Hming</label>
-                <input type="text" id="student-name" readonly required>
-            </div>
-            <div class="input-group">
-                <label>Enrollment Number</label>
-                <input type="text" id="student-enrollment" readonly required>
-            </div>
-            <div class="question"><p>1. HTML tag container siam nan eng tag nge hman?</p>
-                <input type="radio" name="q1" value="div" required> &lt;div&gt; <input type="radio" name="q1" value="span"> &lt;span&gt;</div>
-            <div class="question"><p>2. CSS-ah margin leh content inkar hi?</p>
-                <input type="radio" name="q2" value="padding" required> Padding <input type="radio" name="q2" value="border"> Border</div>
-            <div class="question"><p>3. Website responsive nan?</p>
-                <input type="radio" name="q3" value="media" required> Media Queries <input type="radio" name="q3" value="js"> JavaScript</div>
-            <div class="question"><p>4. Grid-ah column siam nan?</p>
+            <p>1. HTML tag container siam nan?</p>
+            <input type="radio" name="q1" value="div" required> &lt;div&gt; <br>
+            <p>2. CSS Padding hi?</p>
+            <input type="radio" name="q2" value="padding" required> Content leh Border inkar <br>
+            <button type="submit">Submit Test</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        
+        const db = getFirestore(initializeApp({ apiKey: "AIzaSyAYardtj2WcBiUGSD9Ytqa0yZUWwjEXgis", projectId: "bethel-portal-1641f" }));
+        
+        let studentData = null;
+
+        window.verifyStudent = async () => {
+            const enr = document.getElementById('check-enr').value;
+            const docSnap = await getDoc(doc(db, "students", enr));
+            if(docSnap.exists()) {
+                studentData = docSnap.data();
+                document.getElementById('student-display').innerText = "Zirlai: " + studentData.name;
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('test-box').style.display = 'block';
+            } else {
+                alert("Database-ah he enrollment hi a awm lo!");
+            }
+        };
+
+        window.submitTest = async (e) => {
+            e.preventDefault();
+            await setDoc(doc(db, "student_results", studentData.enrollment), {
+                enrollment: studentData.enrollment, name: studentData.name, submittedAt: serverTimestamp()
+            });
+            alert("Test thehluh a ni ta!");
+        }
+    </script>
+</body>
+</html>
                 <input type="radio" name="q4" value="grid" required> grid-template-columns <input type="radio" name="q4" value="flex"> display: flex</div>
             <div class="question"><p>5. HTML5 element thar?</p>
                 <input type="radio" name="q5" value="section" required> &lt;section&gt; <input type="radio" name="q5" value="font"> &lt;font&gt;</div>
