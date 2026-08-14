@@ -2,12 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bethel Test Portal</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
-        input { width: 95%; padding: 10px; margin-bottom: 10px; }
-        button { background: #0284c7; color: white; padding: 10px; width: 100%; border: none; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 10px; }
+        .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input[type="text"] { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background: #0284c7; color: white; padding: 12px; width: 100%; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .question { margin-bottom: 15px; font-size: 14px; }
+        .options { margin-left: 10px; }
+        h2 { font-size: 18px; color: #0284c7; }
     </style>
 </head>
 <body>
@@ -20,11 +25,47 @@
     <div class="container" id="test-box" style="display:none;">
         <h2 id="student-display"></h2>
         <form id="test-form" onsubmit="submitTest(event)">
-            <p>1. HTML tag container siam nan?</p>
-            <input type="radio" name="q1" value="div" required> &lt;div&gt; <br>
-            <p>2. CSS Padding hi?</p>
-            <input type="radio" name="q2" value="padding" required> Content leh Border inkar <br>
-            <button type="submit">Submit Test</button>
+            <div class="question">1. HTML tag container siam nan eng tag nge hman?
+                <div class="options">
+                    <input type="radio" name="q1" value="div" required> &lt;div&gt;<br>
+                    <input type="radio" name="q1" value="span"> &lt;span&gt;<br>
+                    <input type="radio" name="q1" value="p"> &lt;p&gt;<br>
+                    <input type="radio" name="q1" value="section"> &lt;section&gt;
+                </div>
+            </div>
+            <div class="question">2. CSS Box Model-ah content leh border inkar hi engnge?
+                <div class="options">
+                    <input type="radio" name="q2" value="padding" required> Padding<br>
+                    <input type="radio" name="q2" value="margin"> Margin<br>
+                    <input type="radio" name="q2" value="border"> Border<br>
+                    <input type="radio" name="q2" value="width"> Width
+                </div>
+            </div>
+            <div class="question">3. Website responsive nih tir nan eng nge hman?
+                <div class="options">
+                    <input type="radio" name="q3" value="media" required> Media Queries<br>
+                    <input type="radio" name="q3" value="js"> JavaScript<br>
+                    <input type="radio" name="q3" value="php"> PHP<br>
+                    <input type="radio" name="q3" value="sql"> SQL
+                </div>
+            </div>
+            <div class="question">4. CSS Grid column lian lam siam nan?
+                <div class="options">
+                    <input type="radio" name="q4" value="grid" required> grid-template-columns<br>
+                    <input type="radio" name="q4" value="flex"> display: flex<br>
+                    <input type="radio" name="q4" value="auto"> margin: auto<br>
+                    <input type="radio" name="q4" value="none"> none
+                </div>
+            </div>
+            <div class="question">5. HTML5 element thar ber pakhat?
+                <div class="options">
+                    <input type="radio" name="q5" value="section" required> &lt;section&gt;<br>
+                    <input type="radio" name="q5" value="font"> &lt;font&gt;<br>
+                    <input type="radio" name="q5" value="center"> &lt;center&gt;<br>
+                    <input type="radio" name="q5" value="frame"> &lt;frame&gt;
+                </div>
+            </div>
+            <button type="submit" id="submit-btn">Submit Test</button>
         </form>
     </div>
 
@@ -51,98 +92,16 @@
 
         window.submitTest = async (e) => {
             e.preventDefault();
-            await setDoc(doc(db, "student_results", studentData.enrollment), {
-                enrollment: studentData.enrollment, name: studentData.name, submittedAt: serverTimestamp()
-            });
-            alert("Test thehluh a ni ta!");
-        }
-    </script>
-</body>
-</html>
-                <input type="radio" name="q4" value="grid" required> grid-template-columns <input type="radio" name="q4" value="flex"> display: flex</div>
-            <div class="question"><p>5. HTML5 element thar?</p>
-                <input type="radio" name="q5" value="section" required> &lt;section&gt; <input type="radio" name="q5" value="font"> &lt;font&gt;</div>
-            <button type="submit">Submit Test</button>
-        </form>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-        
-        const app = initializeApp({ apiKey: "AIzaSyAYardtj2WcBiUGSD9Ytqa0yZUWwjEXgis", projectId: "bethel-portal-1641f" });
-        const db = getFirestore(app);
-
-        // URL parameter kan man dan:
-        window.onload = () => {
-            const params = new URLSearchParams(window.location.search);
-            const enr = params.get('enrollment');
-            const name = params.get('name');
-
-            console.log("Param hmuh:", enr, name); // Hemi hian console-ah a rawn lang ngei tur a ni
-
-            if(enr && name) {
-                document.getElementById('student-enrollment').value = enr;
-                document.getElementById('student-name').value = name;
-                document.getElementById('test-form').style.display = 'block';
-                document.getElementById('auth-warning').style.display = 'none';
-            } else {
-                document.getElementById('test-form').style.display = 'none';
-                document.getElementById('auth-warning').style.display = 'block';
-            }
-        };
-
-        window.submitTest = async (e) => {
-            e.preventDefault();
-            const enr = document.getElementById('student-enrollment').value;
-            const name = document.getElementById('student-name').value;
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('submit-btn').innerText = "Submit mek...";
             
-            await setDoc(doc(db, "student_results", enr), {
-                enrollment: enr, 
-                name: name, 
-                totalScore: 5, 
-                outOf: 5, 
-                internalMark10: 10, 
+            await setDoc(doc(db, "student_results", studentData.enrollment), {
+                enrollment: studentData.enrollment, 
+                name: studentData.name, 
+                totalScore: "Submitted", 
                 submittedAt: serverTimestamp()
             });
-            alert("Test thehluh a ni ta!");
-        }
-    </script>
-</body>
-</html>
-            <div class="question"><p>4. Grid-ah column siam nan?</p>
-                <input type="radio" name="q4" value="grid" required> grid-template-columns <input type="radio" name="q4" value="flex"> display: flex</div>
-            <div class="question"><p>5. HTML5 element thar?</p>
-                <input type="radio" name="q5" value="section" required> &lt;section&gt; <input type="radio" name="q5" value="font"> &lt;font&gt;</div>
-            <button type="submit">Submit Test</button>
-        </form>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-        
-        const app = initializeApp({ apiKey: "AIzaSyAYardtj2WcBiUGSD9Ytqa0yZUWwjEXgis", projectId: "bethel-portal-1641f" });
-        const db = getFirestore(app);
-
-        const params = new URLSearchParams(window.location.search);
-        const enr = params.get('enrollment');
-        const name = params.get('name');
-
-        if(enr && name) {
-            document.getElementById('student-enrollment').value = enr;
-            document.getElementById('student-name').value = name;
-            document.getElementById('test-form').style.display = 'block';
-        } else {
-            document.getElementById('auth-warning').style.display = 'block';
-        }
-
-        window.submitTest = async (e) => {
-            e.preventDefault();
-            await setDoc(doc(db, "student_results", enr), {
-                enrollment: enr, name: name, submittedAt: serverTimestamp()
-            });
-            alert("Test thehluh a ni ta!");
+            alert("I test thehluh a ni ta!");
         }
     </script>
 </body>
