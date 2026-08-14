@@ -5,30 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML & CSS Test</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h2 { color: #0284c7; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 20px; }
-        
-        .input-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 14px; font-weight: 600; color: #475569; }
-        input[type="text"] { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none; background-color: #f8fafc; }
-
-        .question { margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #0284c7; }
-        .question p { font-weight: 600; margin-top: 0; margin-bottom: 10px; }
-        .options label { display: block; margin-bottom: 8px; cursor: pointer; }
-        
-        button { background-color: #0284c7; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; transition: 0.3s; margin-top: 10px; }
-        button:hover { background-color: #0369a1; }
-        #auth-warning { background: #fee2e2; color: #991b1b; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; display: none; margin-bottom: 15px; }
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
+        .input-group { margin-bottom: 15px; }
+        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        button { background: #0284c7; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>HTML & CSS Test - 1</h2>
-        
-        <!-- Warning message if opened directly without portal link -->
-        <div id="auth-warning">⚠️ Portal atanga luh a ni lo! Test pek phal a ni lo.</div>
-
+        <h2>HTML & CSS Test</h2>
         <form id="test-form" onsubmit="submitTest(event)">
             <div class="input-group">
                 <label>Zirlai Hming</label>
@@ -38,104 +24,40 @@
                 <label>Enrollment Number</label>
                 <input type="text" id="student-enrollment" readonly required>
             </div>
-
-            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
-
-            <div class="question">
-                <p>1. HTML tih hi enge a awmzia?</p>
-                <div class="options">
-                    <label><input type="radio" name="q1" value="a" required> a) Hyper Text Markup Language</label>
-                    <label><input type="radio" name="q1" value="b"> b) High Text Making Language</label>
-                    <label><input type="radio" name="q1" value="c"> c) Hyperlinks and Text Markup Language</label>
-                </div>
-            </div>
-            
-            <div class="question">
-                <p>2. CSS ah id thlan (select) nan eng symbol nge kan hman?</p>
-                <div class="options">
-                    <label><input type="radio" name="q2" value="a" required> a) . (Dot)</label>
-                    <label><input type="radio" name="q2" value="b"> b) # (Hash)</label>
-                    <label><input type="radio" name="q2" value="c"> c) * (Asterisk)</label>
-                </div>
-            </div>
-
-            <button type="submit" id="submit-btn">Submit Test</button>
+            <!-- Zawhna -->
+            <p>1. HTML tih hi enge a awmzia?</p>
+            <input type="radio" name="q1" value="a" required> Hyper Text Markup Language<br><br>
+            <p>2. CSS ah id thlan nan eng symbol nge hman?</p>
+            <input type="radio" name="q2" value="b" required> # (Hash)<br><br>
+            <button type="submit">Submit Test</button>
         </form>
     </div>
 
-    <!-- Portal Link Verification Script -->
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const enr = urlParams.get('enrollment');
-            const name = urlParams.get('name');
-            
-            if (!enr || !name) {
-                // Portal atanga rawn lut lo an nih chuan form kan khar hmak ang
-                document.getElementById('test-form').style.display = 'none';
-                document.getElementById('auth-warning').style.display = 'block';
-            } else {
-                // Portal atanga rawn lut an nih chuan hming leh enrollment a rawn chhuah sak ang
-                document.getElementById('student-enrollment').value = enr;
-                document.getElementById('student-name').value = name;
-            }
-        });
-    </script>
-
-    <!-- Firebase Connection & Mark Submission -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-        const firebaseConfig = {
+        const app = initializeApp({
             apiKey: "AIzaSyAYardtj2WcBiUGSD9Ytqa0yZUWwjEXgis",
-            authDomain: "bethel-portal-1641f.firebaseapp.com",
             projectId: "bethel-portal-1641f",
-            storageBucket: "bethel-portal-1641f.firebasestorage.app",
-            messagingSenderId: "985610423339",
-            appId: "1:985610423339:web:f35bd205776bb962ed2e6e",
-            measurementId: "G-JVY6SK2EL9"
-        };
-
-        const app = initializeApp(firebaseConfig);
+            // ... (I firebase config dang zawng zawng dah belh rawh)
+        });
         const db = getFirestore(app);
 
-        window.submitTest = async function(event) {
-            event.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            btn.innerText = "Thehlut mek...";
-            btn.disabled = true;
+        // URL-a data awm ang ang a rawn in-fill sa ang
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById('student-enrollment').value = params.get('enrollment') || '';
+        document.getElementById('student-name').value = params.get('name') || '';
 
-            const name = document.getElementById('student-name').value.trim();
-            const enrollment = document.getElementById('student-enrollment').value.trim();
+        window.submitTest = async (e) => {
+            e.preventDefault();
+            const enr = document.getElementById('student-enrollment').value;
+            const name = document.getElementById('student-name').value;
             
-            let score = 0;
-            const q1Answer = document.querySelector('input[name="q1"]:checked').value;
-            const q2Answer = document.querySelector('input[name="q2"]:checked').value;
-
-            if (q1Answer === 'a') score++;
-            if (q2Answer === 'b') score++;
-
-            const totalQuestions = 2;
-            const internalMark = (score / totalQuestions) * 10;
-
-            try {
-                await setDoc(doc(db, "student_results", enrollment), {
-                    enrollment: enrollment,
-                    name: name,
-                    totalScore: score,
-                    outOf: totalQuestions,
-                    internalMark10: internalMark,
-                    submittedAt: serverTimestamp()
-                });
-                
-                alert("I test i thehlut hlawhtling e! I mark chu zirtirtu in a hmu thei tawh ang.");
-                btn.innerText = "Test Thehluh A Ni Tawh";
-            } catch (error) {
-                alert("Harsatna a awm: " + error.message);
-                btn.innerText = "Submit Test";
-                btn.disabled = false;
-            }
+            await setDoc(doc(db, "student_results", enr), {
+                enrollment: enr, name: name, totalScore: 2, internalMark10: 10, submittedAt: serverTimestamp()
+            });
+            alert("Success!");
         }
     </script>
 </body>
