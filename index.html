@@ -27,13 +27,64 @@
                 <label>Enrollment Number</label>
                 <input type="text" id="student-enrollment" readonly required>
             </div>
-            <!-- Zawhna 5 -->
             <div class="question"><p>1. HTML tag container siam nan eng tag nge hman?</p>
                 <input type="radio" name="q1" value="div" required> &lt;div&gt; <input type="radio" name="q1" value="span"> &lt;span&gt;</div>
             <div class="question"><p>2. CSS-ah margin leh content inkar hi?</p>
                 <input type="radio" name="q2" value="padding" required> Padding <input type="radio" name="q2" value="border"> Border</div>
             <div class="question"><p>3. Website responsive nan?</p>
                 <input type="radio" name="q3" value="media" required> Media Queries <input type="radio" name="q3" value="js"> JavaScript</div>
+            <div class="question"><p>4. Grid-ah column siam nan?</p>
+                <input type="radio" name="q4" value="grid" required> grid-template-columns <input type="radio" name="q4" value="flex"> display: flex</div>
+            <div class="question"><p>5. HTML5 element thar?</p>
+                <input type="radio" name="q5" value="section" required> &lt;section&gt; <input type="radio" name="q5" value="font"> &lt;font&gt;</div>
+            <button type="submit">Submit Test</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        
+        const app = initializeApp({ apiKey: "AIzaSyAYardtj2WcBiUGSD9Ytqa0yZUWwjEXgis", projectId: "bethel-portal-1641f" });
+        const db = getFirestore(app);
+
+        // URL parameter kan man dan:
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            const enr = params.get('enrollment');
+            const name = params.get('name');
+
+            console.log("Param hmuh:", enr, name); // Hemi hian console-ah a rawn lang ngei tur a ni
+
+            if(enr && name) {
+                document.getElementById('student-enrollment').value = enr;
+                document.getElementById('student-name').value = name;
+                document.getElementById('test-form').style.display = 'block';
+                document.getElementById('auth-warning').style.display = 'none';
+            } else {
+                document.getElementById('test-form').style.display = 'none';
+                document.getElementById('auth-warning').style.display = 'block';
+            }
+        };
+
+        window.submitTest = async (e) => {
+            e.preventDefault();
+            const enr = document.getElementById('student-enrollment').value;
+            const name = document.getElementById('student-name').value;
+            
+            await setDoc(doc(db, "student_results", enr), {
+                enrollment: enr, 
+                name: name, 
+                totalScore: 5, 
+                outOf: 5, 
+                internalMark10: 10, 
+                submittedAt: serverTimestamp()
+            });
+            alert("Test thehluh a ni ta!");
+        }
+    </script>
+</body>
+</html>
             <div class="question"><p>4. Grid-ah column siam nan?</p>
                 <input type="radio" name="q4" value="grid" required> grid-template-columns <input type="radio" name="q4" value="flex"> display: flex</div>
             <div class="question"><p>5. HTML5 element thar?</p>
