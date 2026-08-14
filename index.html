@@ -6,16 +6,16 @@
     <title>Bethel Computer Centre - Test Portal</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 15px; color: #333; }
-        .container { max-width: 500px; margin: 30px auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .container { max-width: 600px; margin: 30px auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         h2, h3 { color: #0284c7; text-align: center; margin-top: 0; }
         .input-group { margin-bottom: 15px; }
         label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; }
         input[type="text"] { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
-        button { background: #0284c7; color: white; padding: 12px; width: 100%; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        button { background: #0284c7; color: white; padding: 14px; width: 100%; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
         button:hover { background: #0369a1; }
         .question { background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #0284c7; }
-        .question p { font-weight: 600; margin-top: 0; margin-bottom: 10px; font-size: 15px; }
-        .options label { display: block; margin-bottom: 8px; cursor: pointer; font-size: 14px; }
+        .question p { font-weight: 600; margin-top: 0; margin-bottom: 10px; font-size: 15px; color: #1e293b; }
+        .options label { display: block; margin-bottom: 8px; cursor: pointer; font-size: 14px; color: #475569; }
         #test-box { display: none; }
         #error-msg { color: #dc2626; font-size: 13px; text-align: center; margin-top: 5px; }
     </style>
@@ -37,60 +37,61 @@
     <!-- 2. TEST FORM BOX -->
     <div class="container" id="test-box">
         <h2 id="student-display"></h2>
-        <p style="text-align: center; color: #64748b; font-size: 13px; margin-bottom: 20px;">HTML & CSS Basic Test</p>
+        <p style="text-align: center; color: #64748b; font-size: 13px; margin-bottom: 20px;">HTML & CSS Basic Test (Multiple Choice)</p>
         
         <form id="test-form" onsubmit="submitTest(event)">
             
             <div class="question">
-                <p>1. HTML tag container siam nan eng tag nge hman ber?</p>
+                <p>1. HTML-ah Web Page structure siam nan leh text/element-te khung nan eng tag (container) nge hman ber?</p>
                 <div class="options">
-                    <label><input type="radio" name="q1" value="div" required> a) &lt;div&gt;</label>
-                    <label><input type="radio" name="q1" value="span"> b) &lt;span&gt;</label>
-                    <label><input type="radio" name="q1" value="p"> c) &lt;p&gt;</label>
-                    <label><input type="radio" name="q1" value="br"> d) &lt;br&gt;</label>
+                    <label><input type="radio" name="q1" value="div" required> A) &lt;div&gt;</label>
+                    <label><input type="radio" name="q1" value="span"> B) &lt;span&gt;</label>
+                    <label><input type="radio" name="q1" value="p"> C) &lt;p&gt;</label>
+                    <label><input type="radio" name="q1" value="br"> D) &lt;br&gt;</label>
                 </div>
             </div>
 
             <div class="question">
-                <p>2. CSS Box Model-ah content leh border inkar hi engnge?</p>
+                <p>2. CSS Box Model-ah Content leh Border inkar a hla zawk tura space siamtu chu engnge?</p>
                 <div class="options">
-                    <label><input type="radio" name="q2" value="padding" required> a) Padding</label>
-                    <label><input type="radio" name="q2" value="margin"> b) Margin</label>
-                    <label><input type="radio" name="q2" value="border"> c) Border</label>
-                    <label><input type="radio" name="q2" value="width"> d) Width</label>
+                    <label><input type="radio" name="q2" value="padding" required> A) Padding</label>
+                    <label><input type="radio" name="q2" value="margin"> B) Margin</label>
+                    <label><input type="radio" name="q2" value="border"> C) Border</label>
+                    <label><input type="radio" name="q2" value="width"> D) Width</label>
                 </div>
             </div>
 
             <div class="question">
-                <p>3. Website responsive nih tir nan eng technology nge hman?</p>
+                <p>3. Website chu phone, tablet leh computer screen hrang hranga mawi taka a in-pharh (responsive) theih nana CSS rule siamtu chu engnge?</p>
                 <div class="options">
-                    <label><input type="radio" name="q3" value="media" required> a) Media Queries</label>
-                    <label><input type="radio" name="q3" value="js"> b) JavaScript</label>
-                    <label><input type="radio" name="q3" value="php"> c) PHP</label>
-                    <label><input type="radio" name="q3" value="sql"> d) SQL</label>
+                    <label><input type="radio" name="q3" value="media" required> A) Media Queries</label>
+                    <label><input type="radio" name="q3" value="js"> B) JavaScript</label>
+                    <label><input type="radio" name="q3" value="php"> C) PHP</label>
+                    <label><input type="radio" name="q3" value="sql"> D) SQL</label>
                 </div>
             </div>
 
             <div class="question">
-                <p>4. CSS Grid-ah column lian lam siam nan eng property nge hman?</p>
+                <p>4. CSS Grid layout-ah Column lian lam leh zat tur semruah nana property hman chu engnge?</p>
                 <div class="options">
-                    <label><input type="radio" name="q4" value="grid" required> a) grid-template-columns</label>
-                    <label><input type="radio" name="q4" value="flex"> b) display: flex</label>
-                    <label><input type="radio" name="q4" value="auto"> c) margin: auto</label>
-                    <label><input type="radio" name="q4" value="none"> d) none</label>
+                    <label><input type="radio" name="q4" value="grid" required> A) grid-template-columns</label>
+                    <label><input type="radio" name="q4" value="flex"> B) display: flex</label>
+                    <label><input type="radio" name="q4" value="auto"> C) margin: auto</label>
+                    <label><input type="radio" name="q4" value="none"> D) none</label>
                 </div>
             </div>
 
             <div class="question">
-                <p>5. HTML5 element thar ber pakhat chu engnge?</p>
+                <p>5. HTML5-ah webpage structure tichiang zual tur a element thar hman zing a mi chu engnge?</p>
                 <div class="options">
-                    <label><input type="radio" name="q5" value="section" required> a) &lt;section&gt;</label>
-                    <label><input type="radio" name="q5" value="font"> b) &lt;font&gt;</label>
-                    <label><input type="radio" name="q5" value="center"> c) &lt;center&gt;</label>
-                    <label><input type="radio" name="q5" value="frame"> d) &lt;frame&gt;</label>
+                    <label><input type="radio" name="q5" value="section" required> A) &lt;section&gt;</label>
+                    <label><input type="radio" name="q5" value="font"> B) &lt;font&gt;</label>
+                    <label><input type="radio" name="q5" value="center"> C) &lt;center&gt;</label>
+                    <label><input type="radio" name="q5" value="frame"> D) &lt;frame&gt;</label>
                 </div>
             </div>
 
+            <!-- SUBMIT BUTTON - PAKHAT CHIAH -->
             <button type="submit" id="submit-btn">Test Thehlut Rawh</button>
         </form>
     </div>
@@ -177,25 +178,7 @@
     </script>
 </body>
 </html>
-    <!-- 2. TEST FORM BOX -->
-    <div class="container" id="test-box">
-        <h2 id="student-display"></h2>
-        <p style="text-align: center; color: #64748b; font-size: 13px; margin-bottom: 20px;">HTML & CSS Basic Test</p>
-        
-        <form id="test-form" onsubmit="submitTest(event)">
-            
-            <div class="question">
-                <p>1. HTML tag container siam nan eng tag nge hman ber?</p>
-                <div class="options">
-                    <label><input type="radio" name="q1" value="div" required> a) &lt;div&gt;</label>
-                    <label><input type="radio" name="q1" value="span"> b) &lt;span&gt;</label>
-                    <label><input type="radio" name="q1" value="p"> c) &lt;p&gt;</label>
-                    <label><input type="radio" name="q1" value="br"> d) &lt;br&gt;</label>
-                </div>
-            </div>
-
-            <div class="question">
-                <p>2. CSS Box Model-ah content leh border inkar hi engnge?</p>
+r hi engnge?</p>
                 <div class="options">
                     <label><input type="radio" name="q2" value="padding" required> a) Padding</label>
                     <label><input type="radio" name="q2" value="margin"> b) Margin</label>
